@@ -1,4 +1,4 @@
 name = "App-Michizane"
-# badges = ["travis"]
+badges = ["travis"]
 module_maker="ModuleBuildTiny"
 
