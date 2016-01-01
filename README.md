@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/hitode909/App-Michizane.svg?branch=master)](https://travis-ci.org/hitode909/App-Michizane)
 # NAME
 
 App::Michizane - It's new $module
