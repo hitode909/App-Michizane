@@ -10,6 +10,11 @@ sub trim ($) {
     $str =~ s{^\s*}{}r =~ s{\s*$}{}r;
 }
 
+sub shorten ($) {
+    my ($str) = @_;
+    $str =~ s{^\s*\S*\s*}{}r;
+}
+
 sub new {
     my ($class) = @_;
 
@@ -19,10 +24,14 @@ sub new {
 sub horizontal {
     my ($self, $query) = @_;
 
+    unless (defined $query && length $query) {
+        return [];
+    }
+
     my @lines = `git grep --fixed-strings -h @{[ quotemeta($query) ]}`;
 
     unless (@lines) {
-        return [];
+        return $self->horizontal(shorten $query);
     }
 
     my $counts = {};
@@ -31,7 +40,7 @@ sub horizontal {
         my $candidate = trim($line);
         next unless length $candidate;
         next if $candidate eq $query;
-        next unless $candidate =~ qr{^\Q$query};
+        # next unless $candidate =~ qr{\Q$query\E$};
         $counts->{$candidate} ||= 0;
         $counts->{$candidate}++;
     }
@@ -43,6 +52,10 @@ sub horizontal {
 
 sub vertical {
     my ($self, $query) = @_;
+
+    unless (defined $query && length $query) {
+        return [];
+    }
 
     my @lines = `git grep -A1 --fixed-strings -h @{[ quotemeta($query) ]}`;
 
