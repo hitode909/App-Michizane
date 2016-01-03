@@ -5,14 +5,24 @@ use warnings;
 
 our $VERSION = "0.01";
 
+# " hi " to "hi"
 sub trim ($) {
     my ($str) = @_;
     $str =~ s{^\s*}{}r =~ s{\s*$}{}r;
 }
 
+# "hi there" to "there"
 sub shorten ($) {
     my ($str) = @_;
     $str =~ s{^\s*\S*\s*}{}r;
+}
+
+# (my $a =, =, my $b = 2) to my $a = 2
+sub merge ($$$) {
+    my ($original, $query, $found) = @_;
+    my $index1 = index($original, $query);
+    my $index2 = index($found, $query);
+    substr($original, 0, $index1) . substr($found, $index2);
 }
 
 sub new {
@@ -22,25 +32,29 @@ sub new {
 }
 
 sub horizontal {
-    my ($self, $query) = @_;
+    my ($self, $query, $skip) = @_;
+    return [] unless defined $query && length $query;
 
-    unless (defined $query && length $query) {
+    $skip ||= 0;
+    my $short_query = $query;
+    $short_query = shorten($short_query) for (1..$skip);
+
+    unless (defined $short_query && length $short_query) {
         return [];
     }
 
-    my @lines = `git grep --fixed-strings -h @{[ quotemeta($query) ]}`;
+    my @lines = `git grep --fixed-strings -h @{[ quotemeta($short_query) ]}`;
 
     unless (@lines) {
-        return $self->horizontal(shorten $query);
+        return $self->horizontal($query, ++$skip);
     }
 
     my $counts = {};
 
     for my $line (@lines) {
-        my $candidate = trim($line);
+        my $candidate = merge($query, $short_query, trim($line));
         next unless length $candidate;
-        next if $candidate eq $query;
-        # next unless $candidate =~ qr{\Q$query\E$};
+        next if $candidate eq $short_query;
         $counts->{$candidate} ||= 0;
         $counts->{$candidate}++;
     }

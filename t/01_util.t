@@ -13,4 +13,9 @@ subtest 'shorten' => sub {
     is App::Michizane::shorten('hello world'), 'world';
 };
 
+subtest 'merge' => sub {
+    is App::Michizane::merge('my $user = User->new', 'my $user = User->new', 'my $user = User->new'), 'my $user = User->new';
+    is App::Michizane::merge('my $user = User', '= User', 'my $user1 = User->new;'), 'my $user = User->new;';
+};
+
 done_testing;
