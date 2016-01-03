@@ -1,4 +1,4 @@
 name = "App-Michizane"
 badges = ["travis"]
 module_maker="ModuleBuildTiny"
-
+readme_from="script/michizane"

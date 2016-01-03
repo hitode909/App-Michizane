@@ -1,0 +1,72 @@
+#!perl
+
+use 5.014;
+use strict;
+use warnings;
+use App::Michizane;
+
+my $command = shift @ARGV;
+my $query = join ' ', @ARGV;
+
+unless (defined $command && ($command eq 'horizontal' || $command eq 'vertical')) {
+    warn "usage: michizane [horizontal|vertical] QUERY";
+    warn "type `perldoc michizane` for more information.";
+    exit 1;
+}
+
+my $app = App::Michizane->new;
+my $result = $app->$command($query);
+
+if (@$result) {
+    say for @$result;
+    exit 0;
+} else {
+    exit 1;
+}
+
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+michizane - The Code Predictor
+
+=head1 SYNOPSIS
+
+    % michizane horizontal <query>
+    % michizane vertical   <query>
+
+=head1 DESCRIPTION
+
+Michizane predicts the code what you are going to type statistically.
+
+Horizontal command shows horizontal complements. This command predicts the rest of your statement.
+
+If you are typing C<use str>, you will type C<use strict>.
+
+    % michizane horizontal 'use str'
+    use strict;
+
+Vertical command shows vertical complements. This command predicts the next line of your statement.
+
+If you typed C<use strict;>, you will type C<use warnings;> or C<use Test::More 0.98;> at next line.
+
+    % michizane vertical 'use strict;'
+    use Test::More 0.98;
+    use warnings;
+
+These candidates are collected from working git repository.
+
+=head1 LICENSE
+
+Copyright (C) hitode909.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 AUTHOR
+
+hitode909 E<lt>hitode909@gmail.comE<gt>
+
+=cut

@@ -1,15 +1,33 @@
 [![Build Status](https://travis-ci.org/hitode909/App-Michizane.svg?branch=master)](https://travis-ci.org/hitode909/App-Michizane)
 # NAME
 
-App::Michizane - It's new $module
+michizane - The Code Predictor
 
 # SYNOPSIS
 
-    use App::Michizane;
+    % michizane horizontal <query>
+    % michizane vertical   <query>
 
 # DESCRIPTION
 
-App::Michizane is ...
+Michizane predicts the code what you are going to type statistically.
+
+Horizontal command shows horizontal complements. This command predicts the rest of your statement.
+
+If you are typing `use str`, you will type `use strict`.
+
+    % michizane horizontal 'use str'
+    use strict;
+
+Vertical command shows vertical complements. This command predicts the next line of your statement.
+
+If you typed `use strict;`, you will type `use warnings;` or `use Test::More 0.98;` at next line.
+
+    % michizane vertical 'use strict;'
+    use Test::More 0.98;
+    use warnings;
+
+These candidates are collected from working git repository.
 
 # LICENSE
 
